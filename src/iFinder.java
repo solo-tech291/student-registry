@@ -1,67 +1,114 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Date;
 public class iFinder {
 
-	public static void main(String[] args)throws IOException {
+	private BufferedReader in = null;
+	private BufferedWriter out = null;
+
+	private static String studentFilePath = "C:\\Users\\sketty\\eclipse-workspace\\GH Care\\src\\resources\\students.txt";
+
+
+	public static void main(String[] args) throws IOException {
 		iFinder ifinder = new iFinder();
 		ifinder.showHomePage();
 	}
-	
-	 public boolean showHomePage() {
-	        Scanner scanner = new Scanner(System.in);
-	        System.out.println("---------------------------------");
-	        System.out.println("*** iFinder ***");
-	        System.out.println("---------------------------------");
-	        System.out.println("");
-	        System.out.println("1. Add a student");
-	        System.out.println("2. Search for a student");
-	        System.out.println("3. Delete a record ");
-	        System.out.println("4. List all records ");
-	        System.out.println("5. Exit ");
-	        System.out.println("");
-	        System.out.print("Enter choice [1 - 5]: ");
-	        Integer selectedAction = scanner.nextInt();
 
-	        if (selectedAction.equals(1)) {
-	            this.showAddAStudentPage();
-	          } 
-	        else if(selectedAction.equals(5)) {
-	            this.exitApp();
-	        }
-	        return true;
-	    }
-	
-	 public boolean showAddAStudentPage() { 
-		 	Scanner scanner = new Scanner(System.in);
-	        System.out.print("Full Name: ");
-	        String fullName = scanner.nextLine();
-	        System.out.print("Index no.: ");
-	        String indexNo = scanner.nextLine();
-	        System.out.print("Email Address: ");
-	        String Email = scanner.nextLine();
-	        System.out.print("Program Of Study: ");
-	        String programOfStudy = scanner.nextLine();
-	        System.out.print("Phone Number: ");
-	        String phoneNumber = scanner.nextLine();
-	        System.out.print("Nickname: ");
-	        String nickname = scanner.nextLine();
-	        System.out.print("Date Of System Registeration: ");
-			String systemRegisteration = scanner.nextLine();
-			System.out.println("Press [y] to save");
-	        String confimrationAction = scanner.nextLine();
-	        if (confimrationAction.toLowerCase().equals("y")) {
-	            System.out.println(showAddAStudentPage());
-	        }
-	        return true;
-	        
-	        }
-	 
-	 public boolean writeStudentToFile() {
-		return false;
-	 }
-	 public void exitApp() {
-		 	System.exit(0);
-	    }
+	public void showHomePage() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("---------------------------------");
+		System.out.println("*** iFinder ***");
+		System.out.println("---------------------------------");
+		System.out.println("");
+		System.out.println("1. Add a student");
+		System.out.println("2. Search for a student");
+		System.out.println("3. Delete a record ");
+		System.out.println("4. List all records ");
+		System.out.println("5. Exit ");
+		System.out.println("");
+		System.out.print("Enter choice [1 - 5]: ");
+		Integer selectedAction = scanner.nextInt();
 
+		if (selectedAction.equals(1)) {
+			this.showAddAStudentPage();
+		} else if (selectedAction.equals(5)) {
+			this.exitApp();
+		}
+
+	}
+
+	public void showAddAStudentPage() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("Full Name: ");
+		String fullName = scanner.nextLine();
+		System.out.print("Index no.: ");
+		String indexNo = scanner.nextLine();
+		System.out.print("Email Address: ");
+		String email = scanner.nextLine();
+		System.out.print("Program Of Study: ");
+		String programOfStudy = scanner.nextLine();
+		System.out.print("Phone Number: ");
+		String phoneNumber = scanner.nextLine();
+		System.out.print("Nickname: ");
+		String nickname = scanner.nextLine();
+
+		System.out.println("Press [y] to save");
+		String confimrationAction = scanner.nextLine();
+		if (confimrationAction.toLowerCase().equals("y")) {
+			Boolean isWrittenToFile = this.writeStudentToFile(fullName, indexNo, email, programOfStudy, phoneNumber, nickname);
+			this.askToExitOrPerformAnotherAction(isWrittenToFile);
+		}
+	}
+
+	public void askToExitOrPerformAnotherAction(Boolean isWrittenToFile) {
+		System.out.println("-------------------------");
+		if (isWrittenToFile) {
+			System.out.println("Student information successfully saved");
+			Scanner in = new Scanner(System.in);
+			System.out.println("Do you wish to perform another action? Press 'y' or 'n'");
+			String performAnotherAction = in.nextLine();
+			if (performAnotherAction.strip().toLowerCase().equals("y")) {
+				this.showHomePage();
+			} else{
+				this.exitApp();
+			}
+		} else{
+			System.out.println("Saving student information failed. Try again later");
+			this.exitApp();
+		}
+
+	}
+
+	public boolean writeStudentToFile(String fullName, String indexNo, String email, String programOfStudy, String phoneNumber, String nickname) {
+		try {
+			fullName = fullName.strip();
+			indexNo = indexNo.strip();
+			email = email.strip();
+			programOfStudy = programOfStudy.strip();
+			phoneNumber = phoneNumber.strip();
+			nickname = nickname.strip();
+			Date mDate = new Date();
+			String dateToday = mDate.toString();
+			String registrationDate = dateToday;
+
+
+			String studentLine = indexNo + "," + fullName + "," + email + "," + programOfStudy + "," + phoneNumber + "," + nickname + "," + registrationDate + "\n";
+			BufferedWriter out = new BufferedWriter(new FileWriter(this.studentFilePath, true));
+
+			System.out.println("student_line == " + studentLine);
+			out.append(studentLine);
+			out.close();
+
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+
+	public void exitApp() {
+		Runtime.getRuntime().exit(0);
+	}
 }
