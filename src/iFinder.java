@@ -6,9 +6,6 @@ import java.util.Scanner;
 import java.util.Date;
 public class iFinder {
 
-	private BufferedReader in = null;
-	private BufferedWriter out = null;
-
 	private static String studentFilePath = "C:\\Users\\sketty\\eclipse-workspace\\GH Care\\src\\resources\\students.txt";
 
 
@@ -106,6 +103,21 @@ public class iFinder {
 		} catch (IOException e) {
 			return false;
 		}
+	}
+
+	public void searchForStudent() {
+		/* Do scanner things */
+		Scanner in = new Scanner(System.in);
+		System.out.println("*** Search For Student ***");
+		System.out.println("Enter student index number to find student information: ");
+		String indexNo = in.nextLine().strip();
+
+		this.readFromStudentFile(indexNo);
+
+	}
+
+	public void readFromStudentFile(String searchTerm) {
+
 	}
 
 	public void exitApp() {
