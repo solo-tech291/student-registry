@@ -2,6 +2,10 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Date;
 public class iFinder {
@@ -31,7 +35,10 @@ public class iFinder {
 
 		if (selectedAction.equals(1)) {
 			this.showAddAStudentPage();
-		} else if (selectedAction.equals(5)) {
+		} else if (selectedAction.equals(2)) {
+			this.searchForStudentPage();
+		}
+		else if (selectedAction.equals(5)) {
 			this.exitApp();
 		}
 
@@ -105,22 +112,49 @@ public class iFinder {
 		}
 	}
 
-	public void searchForStudent() {
+	public void searchForStudentPage() {
 		/* Do scanner things */
 		Scanner in = new Scanner(System.in);
 		System.out.println("*** Search For Student ***");
 		System.out.println("Enter student index number to find student information: ");
 		String indexNo = in.nextLine().strip();
+		String foundStudent = this.searchForStudentWithIndexNumber(indexNo);
+		if (foundStudent.length() > 0) {
+			System.out.println("Your search matched one students: ");
+			System.out.println(foundStudent);
+		} else {
+			System.out.println("No student found our system with provided index number");
 
-		this.readFromStudentFile(indexNo);
+		}
+		Boolean studentFound =  foundStudent.length() > 0;
+		this.askToExitOrPerformAnotherAction(studentFound);
 
 	}
 
-	public void readFromStudentFile(String searchTerm) {
-
+	public String searchForStudentWithIndexNumber(String searchTerm) {
+		List<String> dbStudents;
+		ArrayList<String> foundItems = new ArrayList<String>();
+		String foundStudent = null;
+		Boolean isMatched = false;
+		try {
+			dbStudents = Files.readAllLines(Path.of(this.studentFilePath));
+			for (String student: dbStudents) {
+				String[] dbStudent = student.split(",");
+				isMatched = dbStudent[0].toLowerCase().matches("(\\w|\\s)*(" + searchTerm + ")(\\w|\\s)*");
+				if (isMatched) {
+					foundStudent = student;
+				}
+				isMatched = false;
+			}
+			System.out.println(foundItems);
+			return foundStudent;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public void exitApp() {
 		Runtime.getRuntime().exit(0);
 	}
+
 }
