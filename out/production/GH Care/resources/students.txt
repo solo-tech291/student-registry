@@ -1,2 +1,2 @@
-88888,Solomon Nortey,solomon@gmail.com,Computer Science,054218232,solo,Fri Jun 24 21:53:02 GMT 2022
-88889,Felix Otoo,ofelix03@gmail.com,Computer Science,0542180582,ofelix03,Fri Jun 24 21:53:24 GMT 2022
+1000,Matthew,matthew@gmail.com,Computer science,999,99,Sat Jun 25 21:20:49 GMT 2022
+9999,Solomon,solo@gmail.com,Computer Science,92929,9229,Sat Jun 25 21:22:10 GMT 2022

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -38,7 +39,10 @@ public class iFinder {
 			this.showAddAStudentPage();
 		} else if (selectedAction.equals(2)) {
 			this.searchForStudentPage();
-		} else if (selectedAction.equals(4)) {
+		} else if (selectedAction.equals(3)) {
+			this.deleteStudentRecordPage();
+		}
+		else if (selectedAction.equals(4)) {
 			this.listAllStudentRecordsPage();
 		}
 		else if (selectedAction.equals(5)) {
@@ -184,6 +188,45 @@ public class iFinder {
         }
 		this.askToExitOrPerformAnotherAction();
     }
+
+	public void deleteStudentRecordPage() {
+		System.out.println("");
+		System.out.println("");
+		Scanner in = new Scanner(System.in);
+		System.out.print("Enter student index: ");
+		String indexNo = in.nextLine().strip();
+		Boolean studentIsDeleted = this.deleteStudentRecordFromFile(indexNo);
+		if (studentIsDeleted) {
+			System.out.println("Student with index number " + indexNo + " successfully deleted.");
+		} else {
+			System.out.println("Student with index number " + indexNo + " was not found in our system");
+		}
+		this.askToExitOrPerformAnotherAction();
+	}
+
+	public boolean deleteStudentRecordFromFile(String indexNo) {
+		ArrayList<String> newStudentsList = new ArrayList<String>();
+		try {
+			List<String> students = Files.readAllLines(Path.of(this.studentFilePath));
+			for(String student: students) {
+				String[] studentArr = student.split(",");
+				String studentIndexNo = studentArr[0];
+				if (!studentIndexNo.equals(indexNo)) {
+					newStudentsList.add(student);
+				}
+			}
+			Files.newBufferedWriter(Path.of(this.studentFilePath), StandardOpenOption.TRUNCATE_EXISTING);
+
+			BufferedWriter out = new BufferedWriter(new FileWriter(this.studentFilePath, true));
+			for(String student: newStudentsList) {
+				out.append(student + "\n");
+			}
+			out.close();
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
 
     public List<String> readFrommFileAllStudents() {;
         try {
